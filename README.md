@@ -10,3 +10,8 @@ A simple video player application using Flutter that allows users to play, pause
 Attention : API KEY is not present in this repository . therefore youtube apiKey is required to use this video player. so please add key to this folder "lib/infrastructure/api_key".
 
 
+## Video Player UI
+
+<img src="lib/presentation/screenshots/screen_splash.jpg" alt="Alt text" width="300"/>
+<img src="lib/presentation/screenshots/screen_video_Lists.jpg" alt="Alt text" width="300"/>
+<img src="lib/presentation/screenshots/screen_player.jpg" alt="Alt text" width="300"/>
