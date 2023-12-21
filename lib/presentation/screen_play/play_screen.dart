@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player_a2h/application/list_videos/list_video_bloc.dart';
 import 'package:video_player_a2h/application/screen_player/screen_player_bloc.dart';
+import 'package:video_player_a2h/core/common/duration_format.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PlayScreen extends StatelessWidget {
@@ -17,13 +20,19 @@ class PlayScreen extends StatelessWidget {
         BlocProvider.of<ListVideoBloc>(context).add(ShowVideoList());
         return true;
       },
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Video Playing'),
-            centerTitle: true,
-          ),
-          body: BlocBuilder<ScreenPlayerBloc, ScreenPlayerState>(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Video Playing'),
+          centerTitle: true,
+          elevation: 0,
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.blue, Colors.white])),
+          child: BlocBuilder<ScreenPlayerBloc, ScreenPlayerState>(
             builder: (context, state) {
               if (state.controller != null) {
                 state.controller!.addListener(() {
@@ -32,21 +41,29 @@ class PlayScreen extends StatelessWidget {
                           time: state.controller!.value.position.inSeconds
                               .toDouble()));
                 });
+                //---------------------------------------------duration format parsing
+                Duration currentduration =
+                    CustomDurationParse.parseVideoDuration(
+                        state.controller!.value.position.toString());
+                Duration tDuration = CustomDurationParse.parseVideoDuration(
+                    state.controller!.metadata.duration.toString());
 
+                String showduration =
+                    CustomDurationParse.formatVideoDuration(currentduration);
+                String totalduration =
+                    CustomDurationParse.formatVideoDuration(tDuration);
+
+                //-------------------------------------------------------------------
                 return Column(
                   children: [
-                    Container(
-                      height: 10,
-                    ),
+                    // Container(
+                    //   height: 10,
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: YoutubePlayerBuilder(
                           player: YoutubePlayer(
                             controlsTimeOut: const Duration(seconds: 0),
-                            showVideoProgressIndicator: true,
-                            bufferIndicator: const CircularProgressIndicator(
-                              color: Colors.red,
-                            ),
                             onReady: () {
                               BlocProvider.of<ScreenPlayerBloc>(context)
                                   .add(PlayerReady());
@@ -69,8 +86,8 @@ class PlayScreen extends StatelessWidget {
                                       child: Text(
                                         state.videoTile!,
                                         style: const TextStyle(
-                                          fontSize: 18,
-                                        ),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -79,22 +96,39 @@ class PlayScreen extends StatelessWidget {
                                   height: 28,
                                 ),
                                 //----------------------------------------------video player
-                                player,
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(child: player)),
+                                const SizedBox(
+                                  height: 40,
+                                ),
                                 //-----------------------------------------------seek bar
                                 Slider(
                                   value: state.currentVideoPosition,
                                   min: 0.0,
+                                  thumbColor: Colors.blue[900],
+                                  activeColor: Colors.blue[900],
                                   max: state
                                       .controller!.metadata.duration.inSeconds
                                       .toDouble(),
                                   onChanged: (value) {
-                                    // Seek to the selected position in the video
+                                    //----------------------------------------- Seek to the selected position in the video
                                     BlocProvider.of<ScreenPlayerBloc>(context)
                                         .add(UpdateVideoPosition(
                                             time: value.toDouble()));
-                                    state.controller!.seekTo(
-                                        Duration(seconds: value.toInt()));
+
+                                    //------------------------------------seek function
+                                  state.controller!.seekTo(
+                                          Duration(seconds: value.toInt()));
                                   },
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(showduration),
+                                    Text(totalduration)
+                                  ],
                                 ),
                                 //----------------------------------------------play / pause controls
 
