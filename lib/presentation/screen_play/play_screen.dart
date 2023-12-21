@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_player_a2h/application/list_videos/list_video_bloc.dart';
 import 'package:video_player_a2h/application/screen_player/screen_player_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -13,7 +14,7 @@ class PlayScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         BlocProvider.of<ScreenPlayerBloc>(context).add(Dispose());
-
+        BlocProvider.of<ListVideoBloc>(context).add(ShowVideoList());
         return true;
       },
       child: SafeArea(
@@ -31,7 +32,7 @@ class PlayScreen extends StatelessWidget {
                           time: state.controller!.value.position.inSeconds
                               .toDouble()));
                 });
-      
+
                 return Column(
                   children: [
                     Container(
@@ -91,12 +92,12 @@ class PlayScreen extends StatelessWidget {
                                     BlocProvider.of<ScreenPlayerBloc>(context)
                                         .add(UpdateVideoPosition(
                                             time: value.toDouble()));
-                                    state.controller!
-                                        .seekTo(Duration(seconds: value.toInt()));
+                                    state.controller!.seekTo(
+                                        Duration(seconds: value.toInt()));
                                   },
                                 ),
                                 //----------------------------------------------play / pause controls
-      
+
                                 state.start == true
                                     ? IconButton(
                                         icon: Icon(
@@ -129,7 +130,7 @@ class PlayScreen extends StatelessWidget {
                   ],
                 );
               }
-      
+
               return const SizedBox();
             },
           ),

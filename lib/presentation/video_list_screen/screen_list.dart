@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player_a2h/application/list_videos/list_video_bloc.dart';
 import 'package:video_player_a2h/application/screen_player/screen_player_bloc.dart';
-import 'package:video_player_a2h/presentation/screen_play.dart/play_screen.dart';
+import 'package:video_player_a2h/presentation/screen_play/play_screen.dart';
 import 'package:video_player_a2h/presentation/video_list_screen/widgets/videoTilePlusText.dart';
 
 class ScreenList extends StatelessWidget {
